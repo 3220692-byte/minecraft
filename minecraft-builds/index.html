@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Archive — a Minecraft build journal</title>
+<meta name="description" content="Catalog your Minecraft builds with screenshots, coordinates and block lists. Publish the whole archive as a static site on GitHub Pages.">
+<meta name="theme-color" content="#0e1316">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 72'%3E%3Cpolygon points='32,2 62,19 32,36 2,19' fill='%237ed957'/%3E%3Cpolygon points='2,19 32,36 32,68 2,51' fill='%238a5a3b'/%3E%3Cpolygon points='62,19 32,36 32,68 62,51' fill='%236f452c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="9" r="1.5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20h4L20 8l-4-4L4 16v4zM14 6l4 4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 21V9M7 13l5-5 5 5M4 3h16"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5zM3 7l9 5 9-5M12 12v10"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6 9.7 4.5 4.5 0 0 0 7 18z"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9 17H3L12 3zM12 9v5M12 17v.01"/></symbol>
+</svg>
+
+<a class="skip-link" href="#archive">Skip to the archive</a>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a class="brand" href="#main">
+      <svg class="brand__mark" viewBox="0 0 64 72" aria-hidden="true">
+        <polygon points="32,2 62,19 32,36 2,19" fill="#7ed957"/>
+        <polygon points="2,19 32,36 32,68 2,51" fill="#8a5a3b"/>
+        <polygon points="62,19 32,36 32,68 62,51" fill="#6f452c"/>
+        <path d="M2 19l30 17 30-17" fill="none" stroke="#0b0f12" stroke-width="2"/>
+        <path d="M32 36v32" fill="none" stroke="#0b0f12" stroke-width="2"/>
+        <path d="M8 22l24 13v6L8 28z" fill="#5fbf4a" opacity=".85"/>
+        <path d="M56 22L32 35v6l24-13z" fill="#4f9e3c" opacity=".85"/>
+      </svg>
+      <span class="brand__word"><b>Build</b><i>Archive</i></span>
+    </a>
+
+    <div class="topbar__actions">
+      <span class="status" id="statusChip" data-state="local">
+        <i class="status__dot"></i>
+        <span id="statusText">Saved on this device</span>
+      </span>
+      <button class="btn btn--quiet" id="exportBtn" title="Download a JSON backup">
+        <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span>Export</span>
+      </button>
+      <button class="btn btn--quiet" id="importBtn" title="Import a JSON backup">
+        <svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><span>Import</span>
+      </button>
+      <input type="file" id="importInput" accept=".json,application/json" hidden>
+      <button class="btn btn--quiet" id="settingsBtn" title="GitHub publishing settings">
+        <svg class="icon" aria-hidden="true"><use href="#i-cog"/></svg><span>Publish</span>
+      </button>
+      <button class="btn btn--primary" id="newBtn">
+        <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span>New build</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap">
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="eyebrow__mark"></span>Minecraft build journal</p>
+      <h1>Every block,<br><em>remembered.</em></h1>
+      <p class="lede">Keep screenshots, coordinates and block lists for everything you build — then publish the whole archive as your own site on GitHub Pages.</p>
+      <div class="hero__cta">
+        <button class="btn btn--primary btn--lg" id="heroNewBtn">Add a build</button>
+        <a class="btn btn--ghost btn--lg" href="#archive">Browse the archive</a>
+      </div>
+      <ul class="hero__stats">
+        <li><strong id="statBuilds">0</strong><span>builds</span></li>
+        <li><strong id="statPhotos">0</strong><span>screenshots</span></li>
+        <li><strong id="statBlocks">0</strong><span>block types</span></li>
+      </ul>
+    </div>
+
+    <div class="hero__art" aria-hidden="true">
+      <svg viewBox="0 0 460 340" role="img">
+        <defs>
+          <pattern id="dotgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.4" fill="#3d4a52"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="460" height="340" fill="url(#dotgrid)" opacity=".55"/>
+
+        <!-- stone block -->
+        <g transform="translate(300 176)">
+          <polygon points="0,-34 60,0 0,34 -60,0" fill="#b9bdc2"/>
+          <polygon points="-60,0 0,34 0,88 -60,54" fill="#8e949a"/>
+          <polygon points="60,0 0,34 0,88 60,54" fill="#767d84"/>
+          <path d="M-60,0 0,34 60,0" fill="none" stroke="#20262b" stroke-width="2"/>
+          <path d="M0,34v54" fill="none" stroke="#20262b" stroke-width="2"/>
+          <g fill="#ffffff" opacity=".18">
+            <rect x="-34" y="6" width="12" height="8"/>
+            <rect x="18" y="-8" width="10" height="6"/>
+            <rect x="-48" y="26" width="16" height="10"/>
+          </g>
+        </g>
+
+        <!-- diamond ore -->
+        <g transform="translate(96 224)">
+          <polygon points="0,-28 50,0 0,28 -50,0" fill="#9aa1a7"/>
+          <polygon points="-50,0 0,28 0,72 -50,44" fill="#767d84"/>
+          <polygon points="50,0 0,28 0,72 50,44" fill="#5f666d"/>
+          <path d="M-50,0 0,28 50,0" fill="none" stroke="#20262b" stroke-width="2"/>
+          <path d="M0,28v44" fill="none" stroke="#20262b" stroke-width="2"/>
+          <g fill="#4fd6d6">
+            <rect x="-22" y="6" width="8" height="8"/>
+            <rect x="8" y="10" width="6" height="6"/>
+            <rect x="-10" y="40" width="8" height="8"/>
+          </g>
+        </g>
+
+        <!-- grass block, the hero -->
+        <g transform="translate(206 112)">
+          <polygon points="0,-52 92,0 0,52 -92,0" fill="#7ed957"/>
+          <polygon points="-92,0 0,52 0,122 -92,70" fill="#8a5a3b"/>
+          <polygon points="92,0 0,52 0,122 92,70" fill="#6f452c"/>
+          <polygon points="-92,0 0,52 0,66 -92,14" fill="#5fbf4a"/>
+          <polygon points="92,0 0,52 0,66 92,14" fill="#4f9e3c"/>
+          <path d="M-92,0 0,52 92,0" fill="none" stroke="#12260d" stroke-width="3"/>
+          <path d="M0,52v70M-92,0v70M92,0v70" fill="none" stroke="#12260d" stroke-width="3"/>
+          <g fill="#ffffff" opacity=".16">
+            <rect x="-52" y="-16" width="18" height="10"/>
+            <rect x="16" y="-24" width="14" height="8"/>
+            <rect x="46" y="4" width="12" height="8"/>
+            <rect x="-72" y="10" width="14" height="8"/>
+          </g>
+          <g fill="#2f1a0f" opacity=".28">
+            <rect x="-66" y="38" width="16" height="12"/>
+            <rect x="30" y="52" width="14" height="10"/>
+            <rect x="-14" y="72" width="18" height="12"/>
+            <rect x="54" y="24" width="10" height="10"/>
+          </g>
+        </g>
+
+        <!-- floating bits -->
+        <g class="art-float">
+          <rect x="330" y="70" width="18" height="18" fill="#7ed957"/>
+          <rect x="348" y="88" width="10" height="10" fill="#5fbf4a"/>
+          <rect x="120" y="74" width="14" height="14" fill="#4fd6d6"/>
+          <rect x="392" y="150" width="8" height="8" fill="#f2c14e"/>
+        </g>
+      </svg>
+      <p class="hero__tag"><span class="hero__tag-dot"></span>seed 2026 · hardcore</p>
+    </div>
+  </section>
+
+  <section class="archive wrap" id="archive">
+    <div class="section-head">
+      <h2><span class="hash">//</span> Archive</h2>
+      <p id="archiveMeta">0 builds</p>
+    </div>
+
+    <div class="toolbar">
+      <label class="search" for="searchInput">
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="searchInput" type="search" placeholder="Search builds, blocks or biomes" aria-label="Search builds, blocks or biomes" autocomplete="off" spellcheck="false">
+        <kbd>/</kbd>
+      </label>
+      <div class="chips" id="chips" role="group" aria-label="Filter by category">
+        <button type="button" class="chip is-active" data-cat="all">All</button>
+        <button type="button" class="chip" data-cat="Survival">Survival</button>
+        <button type="button" class="chip" data-cat="Creative">Creative</button>
+        <button type="button" class="chip" data-cat="Redstone">Redstone</button>
+        <button type="button" class="chip" data-cat="Mega base">Mega base</button>
+        <button type="button" class="chip" data-cat="Farm">Farm</button>
+        <button type="button" class="chip" data-cat="Other">Other</button>
+      </div>
+      <label class="sort" for="sortSelect">
+        <span>Sort</span>
+        <select id="sortSelect">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="name">Name A–Z</option>
+          <option value="photos">Most screenshots</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="notice" id="pendingBanner" hidden>
+      <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+      <p><strong>Unpublished changes</strong><span id="pendingText">Publish to update your live GitHub Pages site.</span></p>
+      <div class="notice__actions">
+        <button class="btn btn--sm" type="button" id="discardBtn">Discard</button>
+        <button class="btn btn--sm btn--primary" type="button" id="publishBtn">Publish to GitHub</button>
+      </div>
+    </div>
+
+    <div class="notice notice--sample" id="sampleBanner" hidden>
+      <svg class="icon" aria-hidden="true"><use href="#i-cube"/></svg>
+      <p><strong>Sample builds</strong><span>These are here so you can see how the archive works.</span></p>
+      <div class="notice__actions">
+        <button class="btn btn--sm" type="button" id="removeSamplesBtn">Remove samples</button>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="empty" id="empty" hidden>
+      <div class="empty__art" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <h3 id="emptyTitle">No builds yet</h3>
+      <p id="emptyText">Add your first build with a few screenshots, the coordinates, and the blocks you used.</p>
+      <button class="btn btn--primary" id="emptyNewBtn" type="button">Add a build</button>
+    </div>
+  </section>
+</main>
+
+<footer class="footer wrap">
+  <div class="footer__row">
+    <p class="footer__brand"><span class="cube-mini" aria-hidden="true"></span>Build Archive <span class="footer__dim">— for every block you place.</span></p>
+    <div class="footer__links">
+      <button class="linkish" id="helpBtn" type="button">GitHub setup</button>
+      <button class="linkish" id="footerSettingsBtn" type="button">Publishing settings</button>
+    </div>
+  </div>
+  <p class="footer__note" id="storageNote">Everything is saved in this browser. Export a backup to move the archive to another device.</p>
+</footer>
+
+<!-- ===================== editor ===================== -->
+<dialog class="modal" id="editorDialog" aria-labelledby="editorTitle">
+  <form id="buildForm" class="modal__form" novalidate>
+    <header class="modal__head">
+      <div>
+        <p class="eyebrow" id="editorKicker">New entry</p>
+        <h2 id="editorTitle">Add a build</h2>
+      </div>
+      <button class="icon-btn" type="button" data-close aria-label="Close">
+        <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal__body">
+      <div class="field">
+        <label for="fName">Build name <span class="req">*</span></label>
+        <input id="fName" name="name" type="text" maxlength="80" required placeholder="The Copper Lighthouse">
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="fCategory">Category</label>
+          <select id="fCategory" name="category">
+            <option>Survival</option>
+            <option>Creative</option>
+            <option>Redstone</option>
+            <option>Mega base</option>
+            <option>Farm</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fCoords">Coordinates</label>
+          <input id="fCoords" name="coords" type="text" maxlength="60" placeholder="120, 68, -340">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="fBiome">Biome</label>
+          <input id="fBiome" name="biome" type="text" maxlength="60" list="biomeList" placeholder="Cherry grove">
+        </div>
+        <div class="field">
+          <label for="fWorld">World / mode</label>
+          <input id="fWorld" name="world" type="text" maxlength="60" placeholder="Survival · season 4">
+        </div>
+      </div>
+      <datalist id="biomeList">
+        <option>Plains</option><option>Forest</option><option>Cherry grove</option>
+        <option>Desert</option><option>Badlands</option><option>Taiga</option>
+        <option>Jungle</option><option>Savanna</option><option>Swamp</option>
+        <option>Mushroom fields</option><option>Frozen peaks</option><option>Stony peaks</option>
+        <option>Lush caves</option><option>Deep dark</option><option>Ocean</option>
+        <option>Nether</option><option>The End</option>
+      </datalist>
+
+      <div class="field">
+        <label for="fBlocks">Main blocks</label>
+        <input id="fBlocks" name="blocks" type="text" maxlength="200" placeholder="Copper, deepslate bricks, spruce planks">
+        <p class="hint">Separate blocks with commas.</p>
+      </div>
+
+      <div class="field">
+        <label for="fDesc">Notes</label>
+        <textarea id="fDesc" name="description" rows="4" maxlength="1500" placeholder="What inspired it, how long it took, what you would change next time..."></textarea>
+        <p class="hint hint--right"><span id="descCount">0</span>/1500</p>
+      </div>
+
+      <div class="field">
+        <span class="label">Screenshots <span class="hint">up to 12</span></span>
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Add screenshots">
+          <svg class="icon icon--lg" aria-hidden="true"><use href="#i-image"/></svg>
+          <strong>Drop screenshots here</strong>
+          <span>or click to browse — JPG, PNG, WebP</span>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" multiple hidden>
+        <div class="thumbs" id="draftThumbs"></div>
+      </div>
+    </div>
+
+    <footer class="modal__foot">
+      <button class="btn btn--danger btn--quiet" type="button" id="formDelete" hidden>
+        <svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg><span>Delete</span>
+      </button>
+      <span class="spacer"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn btn--primary" type="submit" id="saveBtn">Save build</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- ===================== detail ===================== -->
+<dialog class="modal modal--wide" id="detailDialog" aria-labelledby="detailName">
+  <header class="modal__head">
+    <div>
+      <p class="eyebrow" id="detailCategory">Survival</p>
+      <h2 id="detailName">Build</h2>
+    </div>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+    </button>
+  </header>
+
+  <div class="modal__body detail">
+    <div class="gallery">
+      <button class="gallery__main" id="galleryMain" type="button">
+        <img id="galleryImage" alt="">
+        <span class="gallery__empty" id="galleryEmpty">No screenshots yet</span>
+      </button>
+      <div class="gallery__thumbs" id="galleryThumbs"></div>
+    </div>
+    <dl class="facts" id="detailFacts"></dl>
+    <p class="detail__desc" id="detailDesc"></p>
+    <div class="detail__blocks" id="detailBlocks"></div>
+  </div>
+
+  <footer class="modal__foot">
+    <button class="btn btn--danger btn--quiet" type="button" id="detailDelete">
+      <svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg><span>Delete</span>
+    </button>
+    <span class="spacer"></span>
+    <button class="btn" type="button" data-close>Close</button>
+    <button class="btn btn--primary" type="button" id="detailEdit">
+      <svg class="icon" aria-hidden="true"><use href="#i-pencil"/></svg><span>Edit build</span>
+    </button>
+  </footer>
+</dialog>
+
+<!-- ===================== lightbox ===================== -->
+<dialog class="lightbox" id="lightbox" aria-label="Screenshot viewer">
+  <button class="lightbox__close icon-btn" type="button" data-close aria-label="Close viewer">
+    <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+  </button>
+  <button class="lightbox__nav lightbox__nav--prev" type="button" id="lightboxPrev" aria-label="Previous screenshot">
+    <svg class="icon" aria-hidden="true"><use href="#i-left"/></svg>
+  </button>
+  <img id="lightboxImage" alt="">
+  <button class="lightbox__nav lightbox__nav--next" type="button" id="lightboxNext" aria-label="Next screenshot">
+    <svg class="icon" aria-hidden="true"><use href="#i-right"/></svg>
+  </button>
+  <p class="lightbox__count" id="lightboxCount"></p>
+</dialog>
+
+<!-- ===================== publishing settings ===================== -->
+<dialog class="modal modal--sm" id="settingsDialog" aria-labelledby="settingsTitle">
+  <form id="settingsForm" class="modal__form">
+    <header class="modal__head">
+      <div>
+        <p class="eyebrow">GitHub</p>
+        <h2 id="settingsTitle">Publishing setup</h2>
+      </div>
+      <button class="icon-btn" type="button" data-close aria-label="Close">
+        <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal__body">
+      <p class="prose">Point the archive at a GitHub repository. When you publish, screenshots and <code>data/builds.json</code> are committed there, and GitHub Pages serves them to everyone.</p>
+
+      <div class="field">
+        <label for="sRepo">Repository</label>
+        <input id="sRepo" type="text" placeholder="yourname/minecraft-builds" spellcheck="false" autocomplete="off">
+        <p class="hint">owner/repo — create it on GitHub first.</p>
+      </div>
+      <div class="field">
+        <label for="sBranch">Branch</label>
+        <input id="sBranch" type="text" placeholder="main" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="sToken">Fine-grained access token</label>
+        <input id="sToken" type="password" placeholder="github_pat_..." spellcheck="false" autocomplete="off">
+        <p class="hint">Needs <strong>Contents: Read and write</strong> for that repository. It stays in this browser and is never saved into the site files.</p>
+      </div>
+
+      <div class="callout" id="settingsMsg" hidden></div>
+    </div>
+
+    <footer class="modal__foot">
+      <button class="btn btn--danger btn--quiet" type="button" id="disconnectBtn" hidden>Disconnect</button>
+      <span class="spacer"></span>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn btn--primary" type="submit" id="settingsSaveBtn">Save &amp; test</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- ===================== help ===================== -->
+<dialog class="modal" id="helpDialog" aria-labelledby="helpTitle">
+  <header class="modal__head">
+    <div>
+      <p class="eyebrow">Five minutes</p>
+      <h2 id="helpTitle">Put the archive online</h2>
+    </div>
+    <button class="icon-btn" type="button" data-close aria-label="Close">
+      <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+    </button>
+  </header>
+
+  <div class="modal__body prose">
+    <ol class="steps">
+      <li>
+        <h3>1. Create the repository</h3>
+        <p>On GitHub, make a new <strong>public</strong> repository, for example <code>minecraft-builds</code>. Don't add a README — you'll upload this folder as-is.</p>
+      </li>
+      <li>
+        <h3>2. Upload the site</h3>
+        <p>Open the repository, choose <strong>Add file → Upload files</strong>, then drag in everything from this folder (<code>index.html</code>, <code>styles.css</code>, <code>app.js</code>, <code>data</code>, and the rest). Commit.</p>
+      </li>
+      <li>
+        <h3>3. Turn on GitHub Pages</h3>
+        <p>In the repository go to <strong>Settings → Pages</strong>. Under <em>Source</em> pick <strong>Deploy from a branch</strong>, branch <strong>main</strong>, folder <strong>/ (root)</strong>. Save.</p>
+        <p>After a minute your archive is live at <code>https://yourname.github.io/minecraft-builds/</code>.</p>
+      </li>
+      <li>
+        <h3>4. Let the site publish for you</h3>
+        <p>Create a fine-grained token at <strong>github.com/settings/tokens?type=beta</strong> for just that repository with <strong>Contents: Read and write</strong>. Paste it into <strong>Publish → Publishing setup</strong> here. Now “Publish to GitHub” uploads new screenshots and build data straight to the repo.</p>
+      </li>
+    </ol>
+    <p class="callout callout--info">New screenshots are resized in the browser before upload, so a page full of builds still stays light. Publishing usually appears on the live site within a minute.</p>
+  </div>
+
+  <footer class="modal__foot">
+    <span class="spacer"></span>
+    <button class="btn btn--primary" type="button" data-close>Got it</button>
+  </footer>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
